@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../components/head.ejs") %>
+  <body>
+    <div class="container p-6">
+      <h1 class="title is-1">Navigation</h1>
+      <div>
+        <div class="block">
+          <a
+            href="/build-account-list"
+            class="button is-medium is-primary is-fullwidth"
+          >
+            Build Account List from Segmentation
+          </a>
+        </div>
+        <div class="block">
+          <a
+            href="/scan-websites"
+            class="button is-medium is-info is-fullwidth"
+          >
+            Scan Websites from Account List
+          </a>
+        </div>
+        <div class="block">
+          <a
+            href="/build-prospect-list"
+            class="button is-medium is-warning is-fullwidth"
+          >
+            Build Prospect List from Account List
+          </a>
+        </div>
+        <div class="block">
+          <a
+            href="/build-contact-list"
+            class="button is-medium is-danger is-fullwidth"
+          >
+            Build Contact List from Account List
+          </a>
+        </div>
+        <form action="/logout" method="POST" class="block">
+          <button type="submit" class="button is-medium is-fullwidth">
+            Log out
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
