@@ -1,0 +1,13 @@
+{
+  "name": "target-list-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Daniel Giustini Perez",
+  "license": "ISC"
+}
