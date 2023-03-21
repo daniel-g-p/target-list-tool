@@ -5,14 +5,42 @@
     <div class="container p-6">
       <%- include("../components/home-link.ejs") %>
       <h1 class="title is-1">Scan Websites</h1>
-      <form action="">
-        <ul>
-          <li>Google Analytics</li>
-          <li>Data Protection Officer</li>
-          <li>Non-functional Cookies</li>
-          <li>EU-US Privacy Shield</li>
-        </ul>
-      </form>
+      <div class="box">
+        <div class="block">
+          <p class="has-text-weight-bold">
+            Scan websites for the following potential privacy and cookie
+            implementation issues:
+          </p>
+        </div>
+        <div class="block">
+          <ul class="content">
+            <% for (const item of checks) { %>
+            <li><%= item %></li>
+            <% } %>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="columns">
+            <div class="column">
+              <a
+                href="/scan-websites/template"
+                class="button is-medium is-primary is-fullwidth"
+              >
+                Download list template
+              </a>
+            </div>
+            <div class="column">
+              <label
+                for="list"
+                class="button is-medium is-primary is-fullwidth"
+              >
+                Upload list
+              </label>
+              <input type="file" name="list" id="list" class="is-sr-only" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <%- include("../components/socket-io.ejs") %>
     <script type="module" src="/js/03-scan-websites.js"></script>

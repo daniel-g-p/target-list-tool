@@ -41,7 +41,25 @@ const getHome = async (req, res) => {
 };
 
 const getScanWebsites = async (req, res) => {
-  return res.render("03-scan-websites");
+  const cookieChecks = config.cookieFlags;
+  const privacyChecks = config.privacyFlags;
+  const checks = [
+    ...cookieChecks.map((item) => item.fullLabel),
+    ...privacyChecks.map((item) => item.fullLabel),
+  ];
+  return res.render("03-scan-websites", { checks });
+};
+
+const getScanWebsitesTemplate = async (req, res) => {
+  const filePath = config.dirname + "/files/scan_websites_list_template.xlsx";
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const fileDate =
+    year + (month < 10 ? "0" + month : month) + (day < 10 ? "0" + day : day);
+  const fileName = fileDate + "-website_scan_template.xlsx";
+  return res.download(filePath, fileName);
 };
 
 const getBuildProspectList = async (req, res) => {
@@ -58,6 +76,7 @@ export default {
   postLogout,
   getHome,
   getScanWebsites,
+  getScanWebsitesTemplate,
   getBuildProspectList,
   getBuildContactList,
 };

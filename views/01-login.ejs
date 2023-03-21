@@ -4,21 +4,25 @@
   <body>
     <div class="container p-6">
       <h1 class="title is-1">Login</h1>
-      <form action="/login" method="POST">
-        <div class="field">
-          <label class="label">Username</label>
-          <div class="control">
-            <input name="username" class="input" type="text" />
+      <div class="box">
+        <form action="/login" method="POST">
+          <div class="field">
+            <label class="label">Username</label>
+            <div class="control">
+              <input name="username" class="input" type="text" />
+            </div>
           </div>
-        </div>
-        <div class="field">
-          <label class="label">Password</label>
-          <div class="control">
-            <input name="password" class="input" type="password" />
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control">
+              <input name="password" class="input" type="password" />
+            </div>
           </div>
-        </div>
-        <button class="button is-primary is-medium is-fullwidth">Log in</button>
-      </form>
+          <button class="button is-primary is-medium is-fullwidth">
+            Log in
+          </button>
+        </form>
+      </div>
     </div>
   </body>
 </html>

@@ -5,16 +5,22 @@ import { fileURLToPath } from "url";
 config();
 
 export default {
+  // Application directory
+  dirname: dirname(fileURLToPath(import.meta.url)),
+
+  // Runtime variables
   env: process.env.NODE_ENV,
   port: process.env.PORT,
-  dirname: dirname(fileURLToPath(import.meta.url)),
-  
+
+  // Secret keys for authentication
   cookieSecret: process.env.COOKIE_SECRET,
   jwtSecret: process.env.JWT_SECRET,
 
+  // Administrator authentication
   adminUsername: process.env.ADMIN_USERNAME,
   adminPassword: process.env.ADMIN_PASSWORD,
 
+  // LinkedIn industry groups
   linkedInIndustryGroups: [
     { label: "Professional Services", industries: [] },
     { label: "Hardware Manufacturing", industries: [] },
@@ -41,9 +47,59 @@ export default {
     { label: "Sports", industries: [] },
   ],
 
-  cookieFlags: [{ name: "", label: "" }],
-  privacyFlags: [{ name: "", label: "" }],
-  negativePrivacyFlags: [{ name: "", label: "" }],
+  // Flagged cookies for website scans
+  cookieFlags: [
+    {
+      name: "_ga",
+      exactMatch: true,
+      label: "Google Analytics",
+      fullLabel: "Is the Google Analytics cookie activated by default?",
+    },
+  ],
+
+  // Keywords to parse pages for privacy-related URLs
+  privacyUrlKeywords: [
+    "datenschutz",
+    "privacy",
+    "data-privacy",
+    "data-protection",
+    "dsgvo",
+    "gdpr",
+  ],
+
+  // Flagged privacy issues for website scans
+  privacyFlags: [
+    {
+      keywords: [
+        "Datenschutzbeauftragter",
+        "Datenschutzbeauftragte",
+        "Datenschutzbeauftragte/r",
+        "Beauftragte für den Datenschutz",
+        "Beauftragter für den Datenschutz",
+        "Beauftragte/r für den Datenschutz",
+        "Beauftragte für Datenschutz",
+        "Beauftragter für Datenschutz",
+        "Beauftragte/r für Datenschutz",
+        "Data Privacy Officer",
+        "Data Protection Officer",
+      ],
+      expected: true,
+      label: "DPO listed",
+      fullLabel: "Is a Data Protection Officer listed?",
+    },
+    {
+      keywords: ["Privacy Shield"],
+      expected: false,
+      label: "EU-US Privacy Shield",
+      fullLabel: "Is the EU-US Privacy Shield mentioned?",
+    },
+    {
+      keywords: ["Google Analytics"],
+      expected: false,
+      label: "Google Analytics",
+      fullLabel: "Is Google Analytics mentioned?",
+    },
+  ],
 };
 
 const linkedInIndustries = [

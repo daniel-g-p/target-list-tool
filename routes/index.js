@@ -16,24 +16,20 @@ router
 router.post("/logout", tryCatch(controller.postLogout));
 
 // Authentication middleware
-router.get("/", middleware.isLoggedIn, tryCatch(controller.getHome));
+router.all(middleware.isLoggedIn);
 
+// Homepage
+router.get("/", tryCatch(controller.getHome));
+
+// Scan websites
+router.get("/scan-websites", tryCatch(controller.getScanWebsites));
 router.get(
-  "/scan-websites",
-  middleware.isLoggedIn,
-  tryCatch(controller.getScanWebsites)
+  "/scan-websites/template",
+  tryCatch(controller.getScanWebsitesTemplate)
 );
 
-router.get(
-  "/build-prospect-list",
-  middleware.isLoggedIn,
-  tryCatch(controller.getBuildProspectList)
-);
+router.get("/build-prospect-list", tryCatch(controller.getBuildProspectList));
 
-router.get(
-  "/build-contact-list",
-  middleware.isLoggedIn,
-  tryCatch(controller.getBuildContactList)
-);
+router.get("/build-contact-list", tryCatch(controller.getBuildContactList));
 
 export default router;
