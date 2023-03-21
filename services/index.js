@@ -111,6 +111,7 @@ const launchBrowser = async (headless, incognito) => {
   const options = {
     headless: headless === false ? false : true,
     incognito: incognito === true,
+    args: ["--no-sandbox"],
   };
   const browser = await puppeteer.launch(options);
   return browser;
