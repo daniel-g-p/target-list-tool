@@ -1,7 +1,9 @@
 import crypto from "crypto";
 
-const generateCookieValue = () => {
-  return crypto.randomBytes(24).toString("hex");
+import jwt from "../utilities/jsonwebtoken.js";
+
+const generateJSONWebToken = (timeToLiveSeconds) => {
+  return jwt.sign({}, timeToLiveSeconds);
 };
 
-export default { generateCookieValue };
+export default { generateJSONWebToken };

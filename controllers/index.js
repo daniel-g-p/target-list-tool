@@ -17,13 +17,13 @@ const postLogin = async (req, res) => {
       : "";
 
   if (username === config.adminUsername && password === config.adminPassword) {
-    const cookieValue = service.generateCookieValue();
-    const cookieOptions = {
-      maxAge: 1000 * 60 * 60 * 12,
+    const timeToLiveSeconds = 60 * 60 * 12;
+    const token = service.generateJSONWebToken(timeToLiveSeconds);
+    const options = {
+      maxAge: timeToLiveSeconds * 1000,
       secure: config.env !== "development",
-      signed: true,
     };
-    res.cookie("auth", cookieValue, cookieOptions);
+    res.cookie("auth", token, options);
     return res.redirect("/");
   } else {
     res.locals.error = "Login failed, please try again";

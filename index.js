@@ -3,7 +3,10 @@ import express from "express";
 
 import config from "./config.js";
 
+import startWebsocket from "./utilities/socket-io.js";
+
 import router from "./routes/index.js";
+import websocket from "./websockets/index.js";
 
 const app = express();
 
@@ -11,6 +14,7 @@ const app = express();
 app.set("view engine", "ejs");
 
 // Global middleware
+app.use(express.static(config.dirname + "/public"));
 app.use(cookieParser(config.cookieSecret));
 app.use(express.urlencoded({ extended: true }));
 
@@ -42,8 +46,15 @@ app.use((error, req, res, next) => {
 });
 
 // Application initialization
-app.listen(config.port, () => {
-  if (config.env === "development") {
-    console.log("Server running on http://localhost:" + config.port);
-  }
-});
+const start = () => {
+  const server = app.listen(config.port, () => {
+    if (config.env === "development") {
+      console.log("Server running on http://localhost:" + config.port);
+    }
+  });
+  startWebsocket(server, (io) => {
+    websocket(io);
+  });
+};
+
+start();

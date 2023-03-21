@@ -1,11 +1,16 @@
 import { config } from "dotenv";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 config();
 
 export default {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
+  dirname: dirname(fileURLToPath(import.meta.url)),
+  
   cookieSecret: process.env.COOKIE_SECRET,
+  jwtSecret: process.env.JWT_SECRET,
 
   adminUsername: process.env.ADMIN_USERNAME,
   adminPassword: process.env.ADMIN_PASSWORD,

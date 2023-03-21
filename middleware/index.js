@@ -1,5 +1,9 @@
+import jwt from "../utilities/jsonwebtoken.js";
+
 const isLoggedIn = (req, res, next) => {
-  const isAuthenticated = req.signedCookies.auth ? true : false;
+  const token = req.cookies.auth || "";
+  const jwtData = jwt.verify(token);
+  const isAuthenticated = jwtData && jwtData.exp * 1000 > Date.now();
   if (isAuthenticated) {
     next();
   } else {
