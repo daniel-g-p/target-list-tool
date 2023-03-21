@@ -3,7 +3,7 @@ import config from "../config.js";
 import service from "../services/index.js";
 
 const getLogin = async (req, res) => {
-  return res.render("login");
+  return res.render("01-login");
 };
 
 const postLogin = async (req, res) => {
@@ -24,9 +24,10 @@ const postLogin = async (req, res) => {
       signed: true,
     };
     res.cookie("auth", cookieValue, cookieOptions);
-    return res.redirect("/navigation");
+    return res.redirect("/");
   } else {
-    return res.render("login");
+    res.locals.error = "Login failed, please try again";
+    return res.render("01-login");
   }
 };
 
@@ -35,33 +36,28 @@ const postLogout = async (req, res) => {
   return res.redirect("/login");
 };
 
-const getNavigation = async (req, res) => {
-  return res.render("navigation");
+const getHome = async (req, res) => {
+  return res.render("02-home");
 };
 
-const getAccounts = async (req, res) => {
-  return res.render("accounts");
+const getScanWebsites = async (req, res) => {
+  return res.render("03-scan-websites");
 };
 
-const getScans = async (req, res) => {
-  return res.render("scans");
+const getBuildProspectList = async (req, res) => {
+  return res.render("04-build-prospect-list");
 };
 
-const getProspects = async (req, res) => {
-  return res.render("prospects");
-};
-
-const getContacts = async (req, res) => {
-  return res.render("contacts");
+const getBuildContactList = async (req, res) => {
+  return res.render("05-build-contact-list");
 };
 
 export default {
   getLogin,
   postLogin,
   postLogout,
-  getNavigation,
-  getAccounts,
-  getScans,
-  getProspects,
-  getContacts,
+  getHome,
+  getScanWebsites,
+  getBuildProspectList,
+  getBuildContactList,
 };

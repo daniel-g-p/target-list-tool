@@ -3,30 +3,22 @@
   <%- include("../components/head.ejs") %>
   <body>
     <div class="container p-6">
-      <h1 class="title is-1">Navigation</h1>
+      <h1 class="title is-1">Home</h1>
       <div>
         <div class="block">
           <a
-            href="/build-account-list"
+            href="/scan-websites"
             class="button is-medium is-primary is-fullwidth"
           >
-            Build Account List from Segmentation
-          </a>
-        </div>
-        <div class="block">
-          <a
-            href="/scan-websites"
-            class="button is-medium is-info is-fullwidth"
-          >
-            Scan Websites from Account List
+            Account List > Website Scan
           </a>
         </div>
         <div class="block">
           <a
             href="/build-prospect-list"
-            class="button is-medium is-warning is-fullwidth"
+            class="button is-medium is-info is-fullwidth"
           >
-            Build Prospect List from Account List
+            Segmentation > Prospect List
           </a>
         </div>
         <div class="block">
@@ -34,7 +26,7 @@
             href="/build-contact-list"
             class="button is-medium is-danger is-fullwidth"
           >
-            Build Contact List from Account List
+            Prospect List > Contact Information
           </a>
         </div>
         <form action="/logout" method="POST" class="block">
