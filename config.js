@@ -19,6 +19,7 @@ export default {
   // Administrator authentication
   adminUsername: process.env.ADMIN_USERNAME,
   adminPassword: process.env.ADMIN_PASSWORD,
+  outreachDefaultOwner: process.env.OUTREACH_DEFAULT_OWNER,
 
   // LinkedIn industry groups
   linkedInIndustryGroups: [

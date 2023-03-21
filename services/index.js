@@ -47,15 +47,60 @@ const readList = (fileBuffer) => {
   const js = XLSX.utils.sheet_to_json(sheet);
   const data = js
     .filter((item) => {
-      return item["Company Name"] && item["Website"] ? true : false;
+      return item && item["Company Name"] && item["Website"] ? true : false;
     })
     .map((item, index) => {
-      const account = item["Company Name"];
-      const website = item["Website"];
+      const account = item["Company Name"] || "";
+      const website = item["Website"] || "";
       return {
         id: index + 1,
         account,
-        website: validateUrl(website) ? website : "https://" + website,
+        website: validateUrl(website)
+          ? website
+          : validateUrl("https://" + website)
+          ? "https://" + website
+          : "",
+        description: item["Company Description"] || "",
+        accountLinkedIn: item["Company Linkedin URL"] || "",
+        industry:
+          typeof item["Industries"] === "string"
+            ? item["Industries"].split(",")[0]
+            : "",
+        employees: item["Headcount"] || "",
+        firstName: item["First Name"] || "",
+        lastName: item["Last Name"] || "",
+        title: item["Job Title"] || "",
+        homePhone:
+          typeof item["HQ"] === "string"
+            ? item["HQ"]
+                .split("\t")
+                .map((substring) => substring.trim())
+                .join("")
+            : typeof item["Office"] === "string"
+            ? item["Office"]
+                .split("\t")
+                .map((substring) => substring.trim())
+                .join("")
+            : "",
+        workPhone:
+          typeof item["Direct"] === "string"
+            ? item["Direct"]
+                .split("\t")
+                .map((substring) => substring.trim())
+                .join("")
+            : "",
+        mobilePhone:
+          typeof item["Mobile"] === "string"
+            ? item["Mobile"]
+                .split("\t")
+                .map((substring) => substring.trim())
+                .join("")
+            : "",
+        email: item["Email"] || "",
+        linkedIn: item["Personal Linkedin URL"] || "",
+        country: item["Country"] || "",
+        city: item["City"] || "",
+        ownerEmail: config.outreachDefaultOwner,
       };
     })
     .filter((item) => validateUrl(item.website));

@@ -13,15 +13,23 @@ export default (io) => {
       io.emit("no-accounts");
       return;
     }
+    const accountNames = list.reduce((result, item) => {
+      if (!result.includes(item.account)) {
+        result.push(item.account);
+      }
+      return result;
+    }, []);
+
     // Launch browser
     const browser = await service.launchBrowser(true, true);
     const page = await browser.newPage();
+
     // Scan websites
     for (let i = 0; i < list.length; i++) {
+      const item = list[i];
       try {
-        const item = list[i];
-
         await page.goto(item.website);
+
         // Scan for cookie issues
         const domain = service.getDomain(page);
         const cookies = await service.getCookies(page);
@@ -34,6 +42,7 @@ export default (io) => {
         if (thirdPartyCookies) {
           cookieFlags.push("Cookies: Third Party Cookies");
         }
+
         // Scan for privacy issues
         const rootUrl = service.getRootUrl(page);
         const privacyUrls = await service.getPrivacyUrls(page, rootUrl);
@@ -57,9 +66,11 @@ export default (io) => {
             }
           }
         }
+
         // Save scan result
         item.checkedUrls = privacyUrls.length;
         item.flags = [...cookieFlags, ...privacyFlags];
+
         // Send progress update
       } catch (error) {
         item.checkedUrls = [];
@@ -68,34 +79,105 @@ export default (io) => {
       }
       io.emit("update-progress", i + 1);
     }
+
     // Close browser
     await browser.close();
+
     // Create output as XLSX file
-    const columns = [
-      "ID",
-      "Account",
+    const accountColumns = [
+      "Name",
       "Website",
+      "Description",
+      "LinkedIn URL",
+      "Industry",
+      "Employees",
+      "Owner email",
       "Privacy: Checked URLs",
       ...config.privacyFlags.map((flag) => "Privacy: " + flag.label),
       "Cookies: Third Party Cookies",
       ...config.cookieFlags.map((flag) => "Cookies: " + flag.label),
     ];
-    const rows = list.map((item) => {
+    const accountRows = accountNames.map((accountName) => {
+      const item = list.find((item) => item.account === accountName);
       return [
-        item.id,
         item.account,
         item.website,
+        item.description,
+        item.accountLinkedIn,
+        item.industry,
+        item.employees,
+        item.ownerEmail,
         item.checkedUrls,
-        ...columns
-          .slice(4)
+        ...accountColumns
+          .slice(8)
           .map((column) => (item.flags.includes(column) ? "x" : "")),
       ];
     });
-    const workbook = service.createSheet(null, "Sheet1", columns, rows);
+    const prospectColumns = [
+      "Account name",
+      "Account",
+      "First name",
+      "Last name",
+      "Title",
+      "Home phone",
+      "Work phone",
+      "Mobile phone",
+      "Email",
+      "LinkedIn",
+      "Country",
+      "City",
+      "Notes",
+      "Website",
+      "Company industry",
+      "Company LinkedIn",
+      "Owner email",
+      "Privacy: Checked URLs",
+      ...config.privacyFlags.map((flag) => "Privacy: " + flag.label),
+      "Cookies: Third Party Cookies",
+      ...config.cookieFlags.map((flag) => "Cookies: " + flag.label),
+    ];
+    const prospectRows = list.map((item) => {
+      return [
+        item.account,
+        item.account,
+        item.firstName,
+        item.lastName,
+        item.title,
+        item.homePhone,
+        item.workPhone,
+        item.mobilePhone,
+        item.email,
+        item.linkedIn,
+        item.country,
+        item.city,
+        item.flags.join(", "),
+        item.website,
+        item.industry,
+        item.accountLinkedIn,
+        item.ownerEmail,
+        item.checkedUrls,
+        ...prospectColumns
+          .slice(18)
+          .map((column) => (item.flags.includes(column) ? "X" : "")),
+      ];
+    });
+    const accountWorkbook = service.createSheet(
+      null,
+      "Accounts",
+      accountColumns,
+      accountRows
+    );
+    const prospectWorkbook = service.createSheet(
+      accountWorkbook,
+      "Prospects",
+      prospectColumns,
+      prospectRows
+    );
+
     // Send XLSX file name to client for download
     const fileName = service.yyyymmdd() + "-" + service.randomHash();
     const filePath = config.dirname + "/output/" + fileName + ".xlsx";
-    const fileData = await service.bookToBuffer(workbook);
+    const fileData = await service.bookToBuffer(prospectWorkbook);
     const fileWritten = await service
       .writeFile(filePath, fileData)
       .then(() => true)
