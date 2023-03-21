@@ -6,6 +6,22 @@ import config from "../config.js";
 
 import jwt from "../utilities/jsonwebtoken.js";
 
+const yyyymmdd = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const yearText = year.toString();
+  const monthText = month < 10 ? "0" + month : month.toString();
+  const dayText = day < 10 ? "0" + day : day.toString();
+  return yearText + monthText + dayText;
+};
+
+const randomHash = (bytes) => {
+  const length = +bytes || 2;
+  return crypto.randomBytes(length).toString("hex");
+};
+
 const generateJSONWebToken = (timeToLiveSeconds) => {
   return jwt.sign({}, timeToLiveSeconds);
 };
@@ -22,10 +38,10 @@ const readWebsiteScanList = (fileBuffer) => {
   const js = XLSX.utils.sheet_to_json(sheet);
   const data = js
     .filter((item) => {
-      return item["Account"] && item["Website"] ? true : false;
+      return item["Company Name"] && item["Website"] ? true : false;
     })
     .map((item, index) => {
-      const account = item["Account"];
+      const account = item["Company Name"];
       const website = item["Website"];
       return {
         id: index + 1,
@@ -116,7 +132,6 @@ const getPrivacyUrlsOnPage = async (page, rootUrl) => {
     const href = await getElementHrefAttribute(link, rootUrl).then((href) => {
       return href.split("?")[0].split("#")[0];
     });
-    console.log(href);
     const hasKeyword = config.privacyUrlKeywords.some((keyword) => {
       return href.toLowerCase().includes(keyword.toLowerCase());
     });
@@ -150,34 +165,12 @@ const getPrivacyFlagsOnPage = async (page) => {
     .map((flag) => flag.label);
 };
 
-const createXlsxBook = () => {
-  return XLSX.utils.book_new();
-};
-
 const addSheetToXlsxBook = (xlsxBook, sheetName, columns, rows) => {
-  const book = xlsxBook ? xlsxBook : createXlsxBook();
+  const book = xlsxBook ? xlsxBook : XLSX.utils.book_new();
   const sheet = XLSX.utils.aoa_to_sheet([columns, ...rows]);
   XLSX.utils.book_append_sheet(book, sheet, sheetName);
   return book;
 };
-
-const yyyymmdd = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const day = today.getDate();
-  const yearText = year.toString();
-  const monthText = month < 10 ? "0" + month : month.toString();
-  const dayText = day < 10 ? "0" + day : day.toString();
-  return yearText + monthText + dayText;
-};
-
-const randomHash = (bytes) => {
-  const length = +bytes || 2;
-  return crypto.randomBytes(length).toString("hex");
-};
-
-const readFile = async () => {};
 
 const writeXlsxFile = (xlsxBook, fileName) => {
   XLSX.writeFile(xlsxBook, fileName);
@@ -185,6 +178,8 @@ const writeXlsxFile = (xlsxBook, fileName) => {
 };
 
 export default {
+  yyyymmdd,
+  randomHash,
   generateJSONWebToken,
   validateUrl,
   readWebsiteScanList,
@@ -197,9 +192,7 @@ export default {
   getPrivacyUrlsOnPage,
   getElementHrefAttribute,
   getPrivacyFlagsOnPage,
-  createXlsxBook,
+  writeXlsxFile,
   addSheetToXlsxBook,
-  yyyymmdd,
-  randomHash,
   writeXlsxFile,
 };

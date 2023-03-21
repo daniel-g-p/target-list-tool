@@ -56,6 +56,15 @@ const getScanWebsitesTemplate = async (req, res) => {
   return res.download(filePath, fileName);
 };
 
+const getScanWebsitesOutput = async (req, res) => {
+  const { fileName } = req.params;
+  const filePath = config.dirname + "/output/" + fileName + ".xlsx";
+  const downloadName = fileName + "-target_list.xlsx";
+  return res.download(filePath, downloadName, {}, () => {
+    // Delete file
+  });
+};
+
 const getBuildProspectList = async (req, res) => {
   return res.render("04-build-prospect-list");
 };
@@ -71,6 +80,7 @@ export default {
   getHome,
   getScanWebsites,
   getScanWebsitesTemplate,
+  getScanWebsitesOutput,
   getBuildProspectList,
   getBuildContactList,
 };

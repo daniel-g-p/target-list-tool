@@ -15,8 +15,6 @@ listInput.addEventListener("change", (event) => {
     const socket = websocket();
     socket.emit("scan-websites/upload", file);
 
-    console.log("Event sent");
-
     socket.on("scan-websites/ok/accepted", (payload) => {
       console.log("Scanning " + payload + " websites...");
     });
@@ -26,7 +24,9 @@ listInput.addEventListener("change", (event) => {
     });
 
     socket.on("scan-websites/ok/result", (payload) => {
-      console.log(payload);
+      const downloadButton = document.createElement("a");
+      downloadButton.setAttribute("href", "/scan-websites/output/" + payload);
+      downloadButton.click();
     });
   }
 });

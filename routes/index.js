@@ -27,6 +27,10 @@ router.get(
   "/scan-websites/template",
   tryCatch(controller.getScanWebsitesTemplate)
 );
+router.get(
+  "/scan-websites/output/:fileName",
+  tryCatch(controller.getScanWebsitesOutput)
+);
 
 router.get("/build-prospect-list", tryCatch(controller.getBuildProspectList));
 
