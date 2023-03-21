@@ -52,13 +52,7 @@ const getScanWebsites = async (req, res) => {
 
 const getScanWebsitesTemplate = async (req, res) => {
   const filePath = config.dirname + "/files/scan_websites_list_template.xlsx";
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const fileDate =
-    year + (month < 10 ? "0" + month : month) + (day < 10 ? "0" + day : day);
-  const fileName = fileDate + "-website_scan_template.xlsx";
+  const fileName = service.yyyymmdd() + "-website_scan_template.xlsx";
   return res.download(filePath, fileName);
 };
 
