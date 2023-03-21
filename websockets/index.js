@@ -4,13 +4,13 @@ import service from "../services/index.js";
 
 export default (io) => {
   // Scan websites
-  io.listen("scan-websites/upload", async (fileBuffer) => {
+  io.listen("upload-list", async (fileBuffer) => {
     // Read list of accounts
-    const list = service.readWebsiteScanList(fileBuffer);
+    const list = service.readList(fileBuffer);
     if (list.length > 0) {
-      io.emit("scan-websites/ok/accepted", list.length);
+      io.emit("list-accepted", list.length);
     } else {
-      io.emit("scan-websites/error/no-accounts");
+      io.emit("no-accounts");
       return;
     }
     // Launch browser
@@ -23,8 +23,8 @@ export default (io) => {
 
         await page.goto(item.website);
         // Scan for cookie issues
-        const domain = service.getPageDomain(page);
-        const cookies = await service.getPageCookies(page);
+        const domain = service.getDomain(page);
+        const cookies = await service.getCookies(page);
         const cookieFlags = service
           .getCookieFlags(cookies, domain)
           .map((flag) => "Cookies: " + flag);
@@ -35,14 +35,14 @@ export default (io) => {
           cookieFlags.push("Cookies: Third Party Cookies");
         }
         // Scan for privacy issues
-        const rootUrl = service.getPageRootUrl(page);
-        const privacyUrls = await service.getPrivacyUrlsOnPage(page, rootUrl);
+        const rootUrl = service.getRootUrl(page);
+        const privacyUrls = await service.getPrivacyUrls(page, rootUrl);
         const privacyFlags = [];
         for (const url of privacyUrls) {
           const flags = await page
             .goto(url)
             .then(() => {
-              return service.getPrivacyFlagsOnPage(page);
+              return service.getPrivacyFlags(page);
             })
             .then((flags) => {
               return flags.map((flag) => "Privacy: " + flag);
@@ -66,7 +66,7 @@ export default (io) => {
         item.flags = [];
         console.log(error);
       }
-      io.emit("scan-websites/ok/progress", i + 1);
+      io.emit("update-progress", i + 1);
     }
     // Close browser
     await browser.close();
@@ -91,11 +91,11 @@ export default (io) => {
           .map((column) => (item.flags.includes(column) ? "x" : "")),
       ];
     });
-    const workbook = service.createXlsxSheet(null, "Sheet1", columns, rows);
+    const workbook = service.createSheet(null, "Sheet1", columns, rows);
     // Send XLSX file name to client for download
     const fileName = service.yyyymmdd() + "-" + service.randomHash();
     const filePath = config.dirname + "/output/" + fileName + ".xlsx";
-    const fileData = await service.xlsxBookToBuffer(workbook);
+    const fileData = await service.bookToBuffer(workbook);
     const fileWritten = await service
       .writeFile(filePath, fileData)
       .then(() => true)
@@ -104,9 +104,9 @@ export default (io) => {
         return false;
       });
     if (fileWritten) {
-      io.emit("scan-websites/ok/result", fileName);
+      io.emit("result-ready", fileName);
     } else {
-      io.emit("scan-websites/error/write-failed");
+      io.emit("write-failed");
     }
   });
 };

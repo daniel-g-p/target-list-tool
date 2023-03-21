@@ -7,6 +7,14 @@ import config from "../config.js";
 
 import jwt from "../utilities/jsonwebtoken.js";
 
+const wait = async (waitTime) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, waitTime);
+  });
+};
+
 const yyyymmdd = () => {
   const today = new Date();
   const year = today.getFullYear();
@@ -23,7 +31,7 @@ const randomHash = (bytes) => {
   return crypto.randomBytes(length).toString("hex");
 };
 
-const generateJSONWebToken = (timeToLiveSeconds) => {
+const jsonWebToken = (timeToLiveSeconds) => {
   return jwt.sign({}, timeToLiveSeconds);
 };
 
@@ -33,7 +41,7 @@ const validateUrl = (url) => {
   return regex.test(url);
 };
 
-const readWebsiteScanList = (fileBuffer) => {
+const readList = (fileBuffer) => {
   const book = XLSX.read(fileBuffer);
   const sheet = book.Sheets[book.SheetNames[0]];
   const js = XLSX.utils.sheet_to_json(sheet);
@@ -63,7 +71,7 @@ const launchBrowser = async (headless, incognito) => {
   return browser;
 };
 
-const getPageDomain = (page) => {
+const getDomain = (page) => {
   return page
     .url()
     .replace("https://www.", "")
@@ -73,12 +81,12 @@ const getPageDomain = (page) => {
     .split("/")[0];
 };
 
-const getPageRootUrl = (page) => {
-  const domain = getPageDomain(page);
+const getRootUrl = (page) => {
+  const domain = getDomain(page);
   return page.url().split(domain)[0] + domain;
 };
 
-const getPageCookies = async (page) => {
+const getCookies = async (page) => {
   return await page.cookies().then((cookies) => {
     return cookies.map((cookie) => {
       return { name: cookie.name.trim(), domain: cookie.domain.trim() };
@@ -99,7 +107,7 @@ const getCookieFlags = (cookies, domain) => {
     .map((flag) => flag.label);
 };
 
-const getElementHrefAttribute = async (element, rootUrl) => {
+const getHrefAttribute = async (element, rootUrl) => {
   return await element
     .evaluate((el) => el.getAttribute("href"))
     .then((res) => {
@@ -126,11 +134,11 @@ const getElementTextContent = async (element) => {
     .catch(() => "");
 };
 
-const getPrivacyUrlsOnPage = async (page, rootUrl) => {
+const getPrivacyUrls = async (page, rootUrl) => {
   const urls = [];
   const links = await page.$$("a");
   for (const link of links) {
-    const href = await getElementHrefAttribute(link, rootUrl).then((href) => {
+    const href = await getHrefAttribute(link, rootUrl).then((href) => {
       return href.split("?")[0].split("#")[0];
     });
     const hasKeyword = config.privacyUrlKeywords.some((keyword) => {
@@ -143,7 +151,7 @@ const getPrivacyUrlsOnPage = async (page, rootUrl) => {
   return urls;
 };
 
-const getPrivacyFlagsOnPage = async (page) => {
+const getPrivacyFlags = async (page) => {
   const body = await page.$("body");
   const text = await getElementTextContent(body);
   return config.privacyFlags
@@ -166,14 +174,14 @@ const getPrivacyFlagsOnPage = async (page) => {
     .map((flag) => flag.label);
 };
 
-const createXlsxSheet = (xlsxBook, sheetName, columns, rows) => {
+const createSheet = (xlsxBook, sheetName, columns, rows) => {
   const book = xlsxBook ? xlsxBook : XLSX.utils.book_new();
   const sheet = XLSX.utils.aoa_to_sheet([columns, ...rows]);
   XLSX.utils.book_append_sheet(book, sheet, sheetName);
   return book;
 };
 
-const xlsxBookToBuffer = (xlsxBook) => {
+const bookToBuffer = (xlsxBook) => {
   return XLSX.write(xlsxBook, { type: "buffer" });
 };
 
@@ -202,22 +210,22 @@ const deleteFile = async (filePath) => {
 };
 
 export default {
+  wait,
   yyyymmdd,
   randomHash,
-  generateJSONWebToken,
+  jsonWebToken,
   validateUrl,
-  readWebsiteScanList,
+  readList,
   launchBrowser,
-  getPageDomain,
-  getPageRootUrl,
-  getPageCookies,
+  getDomain,
+  getRootUrl,
+  getCookies,
   getCookieFlags,
-  getElementHrefAttribute,
-  getPrivacyUrlsOnPage,
-  getElementHrefAttribute,
-  getPrivacyFlagsOnPage,
-  createXlsxSheet,
-  xlsxBookToBuffer,
+  getHrefAttribute,
+  getPrivacyUrls,
+  getPrivacyFlags,
+  createSheet,
+  bookToBuffer,
   writeFile,
   deleteFile,
 };

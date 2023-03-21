@@ -14,7 +14,7 @@ const isLoggedIn = (req, res, next) => {
 };
 
 const isLoggedOut = (req, res, next) => {
-  const isAuthenticated = req.signedCookies.auth ? true : false;
+  const isAuthenticated = req.cookies.auth ? true : false;
   if (isAuthenticated) {
     const error = new Error(403);
     next(error);

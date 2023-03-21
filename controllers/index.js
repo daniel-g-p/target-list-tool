@@ -3,10 +3,11 @@ import config from "../config.js";
 import service from "../services/index.js";
 
 const getLogin = async (req, res) => {
-  return res.render("01-login");
+  return res.render("login");
 };
 
 const postLogin = async (req, res) => {
+  await service.wait(1000);
   const username =
     req.body.username && typeof req.body.username === "string"
       ? req.body.username.trim().toLowerCase()
@@ -18,7 +19,7 @@ const postLogin = async (req, res) => {
 
   if (username === config.adminUsername && password === config.adminPassword) {
     const timeToLiveSeconds = 60 * 60 * 12;
-    const token = service.generateJSONWebToken(timeToLiveSeconds);
+    const token = service.jsonWebToken(timeToLiveSeconds);
     const options = {
       maxAge: timeToLiveSeconds * 1000,
       secure: config.env !== "development",
@@ -27,7 +28,7 @@ const postLogin = async (req, res) => {
     return res.redirect("/");
   } else {
     res.locals.error = "Login failed, please try again";
-    return res.render("01-login");
+    return res.render("login");
   }
 };
 
@@ -37,26 +38,22 @@ const postLogout = async (req, res) => {
 };
 
 const getHome = async (req, res) => {
-  return res.render("02-home");
-};
-
-const getScanWebsites = async (req, res) => {
   const cookieChecks = config.cookieFlags;
   const privacyChecks = config.privacyFlags;
   const checks = [
     ...cookieChecks.map((item) => item.fullLabel),
     ...privacyChecks.map((item) => item.fullLabel),
   ];
-  return res.render("03-scan-websites", { checks });
+  return res.render("home", { checks });
 };
 
-const getScanWebsitesTemplate = async (req, res) => {
-  const filePath = config.dirname + "/files/scan_websites_list_template.xlsx";
-  const fileName = service.yyyymmdd() + "-website_scan_template.xlsx";
+const getTemplate = async (req, res) => {
+  const filePath = config.dirname + "/files/target_list_template.xlsx";
+  const fileName = service.yyyymmdd() + "-target_list_template.xlsx";
   return res.download(filePath, fileName);
 };
 
-const getScanWebsitesOutput = async (req, res) => {
+const getOutput = async (req, res) => {
   const { fileName } = req.params;
   const filePath = config.dirname + "/output/" + fileName + ".xlsx";
   const downloadName = fileName + "-target_list.xlsx";
@@ -65,22 +62,11 @@ const getScanWebsitesOutput = async (req, res) => {
   });
 };
 
-const getBuildProspectList = async (req, res) => {
-  return res.render("04-build-prospect-list");
-};
-
-const getBuildContactList = async (req, res) => {
-  return res.render("05-build-contact-list");
-};
-
 export default {
   getLogin,
   postLogin,
   postLogout,
   getHome,
-  getScanWebsites,
-  getScanWebsitesTemplate,
-  getScanWebsitesOutput,
-  getBuildProspectList,
-  getBuildContactList,
+  getTemplate,
+  getOutput,
 };
