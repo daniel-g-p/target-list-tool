@@ -6,7 +6,6 @@ export default (io) => {
   // Scan websites
   io.listen("scan-websites/upload", async (fileBuffer) => {
     // Read list of accounts
-    console.log(fileBuffer);
     const list = service.readWebsiteScanList(fileBuffer);
     if (list.length > 0) {
       io.emit("scan-websites/ok/accepted", list.length);
@@ -62,10 +61,12 @@ export default (io) => {
         item.checkedUrls = privacyUrls.length;
         item.flags = [...cookieFlags, ...privacyFlags];
         // Send progress update
-        io.emit("scan-websites/ok/progress", i + 1);
       } catch (error) {
+        item.checkedUrls = [];
+        item.flags = [];
         console.log(error);
       }
+      io.emit("scan-websites/ok/progress", i + 1);
     }
     // Close browser
     await browser.close();
@@ -90,11 +91,22 @@ export default (io) => {
           .map((column) => (item.flags.includes(column) ? "x" : "")),
       ];
     });
-    const workbook = service.addSheetToXlsxBook(null, "Sheet1", columns, rows);
+    const workbook = service.createXlsxSheet(null, "Sheet1", columns, rows);
     // Send XLSX file name to client for download
     const fileName = service.yyyymmdd() + "-" + service.randomHash();
     const filePath = config.dirname + "/output/" + fileName + ".xlsx";
-    service.writeXlsxFile(workbook, filePath);
-    io.emit("scan-websites/ok/result", fileName);
+    const fileData = await service.xlsxBookToBuffer(workbook);
+    const fileWritten = await service
+      .writeFile(filePath, fileData)
+      .then(() => true)
+      .catch((error) => {
+        console.log(error);
+        return false;
+      });
+    if (fileWritten) {
+      io.emit("scan-websites/ok/result", fileName);
+    } else {
+      io.emit("scan-websites/error/write-failed");
+    }
   });
 };

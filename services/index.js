@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import fs from "fs";
 import puppeteer from "puppeteer";
 import XLSX from "xlsx";
 
@@ -165,16 +166,39 @@ const getPrivacyFlagsOnPage = async (page) => {
     .map((flag) => flag.label);
 };
 
-const addSheetToXlsxBook = (xlsxBook, sheetName, columns, rows) => {
+const createXlsxSheet = (xlsxBook, sheetName, columns, rows) => {
   const book = xlsxBook ? xlsxBook : XLSX.utils.book_new();
   const sheet = XLSX.utils.aoa_to_sheet([columns, ...rows]);
   XLSX.utils.book_append_sheet(book, sheet, sheetName);
   return book;
 };
 
-const writeXlsxFile = (xlsxBook, fileName) => {
-  XLSX.writeFile(xlsxBook, fileName);
-  return true;
+const xlsxBookToBuffer = (xlsxBook) => {
+  return XLSX.write(xlsxBook, { type: "buffer" });
+};
+
+const writeFile = async (path, data) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, data, {}, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
+const deleteFile = async (filePath) => {
+  return new Promise((resolve, reject) => {
+    fs.unlink(filePath, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
 };
 
 export default {
@@ -192,7 +216,8 @@ export default {
   getPrivacyUrlsOnPage,
   getElementHrefAttribute,
   getPrivacyFlagsOnPage,
-  writeXlsxFile,
-  addSheetToXlsxBook,
-  writeXlsxFile,
+  createXlsxSheet,
+  xlsxBookToBuffer,
+  writeFile,
+  deleteFile,
 };

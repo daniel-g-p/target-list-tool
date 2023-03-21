@@ -71,6 +71,7 @@ export default {
     "privacy",
     "data-privacy",
     "data-protection",
+    "datensicherheit",
     "dsgvo",
     "gdpr",
   ],

@@ -61,7 +61,7 @@ const getScanWebsitesOutput = async (req, res) => {
   const filePath = config.dirname + "/output/" + fileName + ".xlsx";
   const downloadName = fileName + "-target_list.xlsx";
   return res.download(filePath, downloadName, {}, () => {
-    // Delete file
+    service.deleteFile(filePath);
   });
 };
 
