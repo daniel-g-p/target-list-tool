@@ -74,7 +74,7 @@ export default (io) => {
         // Send progress update
       } catch (error) {
         item.checkedUrls = [];
-        item.flags = [];
+        item.flags = ["Website scan failed"];
         console.log(error);
       }
       io.emit("update-progress", i + 1);
@@ -92,6 +92,7 @@ export default (io) => {
       "Industry",
       "Employees",
       "Owner email",
+      "Website scan failed",
       "Privacy: Checked URLs",
       ...config.privacyFlags.map((flag) => "Privacy: " + flag.label),
       "Cookies: Third Party Cookies",
@@ -131,6 +132,7 @@ export default (io) => {
       "Company industry",
       "Company LinkedIn",
       "Owner email",
+      "Website scan failed",
       "Privacy: Checked URLs",
       ...config.privacyFlags.map((flag) => "Privacy: " + flag.label),
       "Cookies: Third Party Cookies",

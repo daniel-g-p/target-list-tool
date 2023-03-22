@@ -1,7 +1,5 @@
 # Website Scanner
 
-
-
 ## Setting up the scanner (Ubuntu 22.04)
 
 Run the following commands in order
@@ -36,4 +34,4 @@ npm i -g pm2
 pm2 start index.js
 ```
 
-## Deploying the sccanner
+## Deploying the scanner
