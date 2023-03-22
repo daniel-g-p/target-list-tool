@@ -152,7 +152,7 @@ export default (io) => {
         item.linkedIn,
         item.country,
         item.city,
-        item.flags.join(", "),
+        item.flags.join(" / "),
         item.website,
         item.industry,
         item.accountLinkedIn,
