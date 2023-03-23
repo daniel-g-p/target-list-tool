@@ -20,7 +20,7 @@ const postLogin = async (req, res) => {
   if (username === config.adminUsername && password === config.adminPassword) {
     const timeToLiveSeconds = 60 * 60 * 12;
     const token = service.jsonWebToken(timeToLiveSeconds);
-    const options = { maxAge: timeToLiveSeconds * 1000 };
+    const options = { maxAge: timeToLiveSeconds * 1000, secure: true };
     res.cookie("auth", token, options);
     return res.redirect("/");
   } else {
