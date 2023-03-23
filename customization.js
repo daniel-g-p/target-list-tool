@@ -15,6 +15,7 @@ export default {
   privacyFlags: [
     {
       keywords: [
+        "Datenschutzbeauftragten",
         "Datenschutzbeauftragter",
         "Datenschutzbeauftragte",
         "Datenschutzbeauftragte/r",

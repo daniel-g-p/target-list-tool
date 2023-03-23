@@ -206,7 +206,7 @@ const getPrivacyFlags = async (page) => {
       if (flag.expected) {
         return flag.exactMatch
           ? flag.keywords.every((keyword) => !text.includes(keyword))
-          : flag.keywords.some((keyword) => {
+          : flag.keywords.every((keyword) => {
               return !text.toLowerCase().includes(keyword.toLowerCase());
             });
       } else {
