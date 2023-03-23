@@ -25,7 +25,7 @@ export default (io) => {
     const page = await browser.newPage();
 
     // Scan websites
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < accountNames.length; i++) {
       const item = list[i];
       try {
         await page.goto(item.website);
@@ -98,22 +98,26 @@ export default (io) => {
       "Cookies: Third Party Cookies",
       ...config.cookieFlags.map((flag) => "Cookies: " + flag.label),
     ];
-    const accountRows = accountNames.map((accountName) => {
-      const item = list.find((item) => item.account === accountName);
-      return [
-        item.account,
-        item.website,
-        item.description,
-        item.accountLinkedIn,
-        item.industry,
-        item.employees,
-        item.ownerEmail,
-        item.checkedUrls,
-        ...accountColumns
-          .slice(8)
-          .map((column) => (item.flags.includes(column) ? "x" : "")),
-      ];
-    });
+    const accountRows = accountNames
+      .map((accountName) => {
+        const item = list.find((item) => item.account === accountName);
+        return item
+          ? [
+              item.account,
+              item.website,
+              item.description,
+              item.accountLinkedIn,
+              item.industry,
+              item.employees,
+              item.ownerEmail,
+              item.checkedUrls,
+              ...accountColumns
+                .slice(8)
+                .map((column) => (item.flags.includes(column) ? "x" : "")),
+            ]
+          : null;
+      })
+      .filter((item) => (item ? true : false));
     const prospectColumns = [
       "Account name",
       "Account",
@@ -138,43 +142,48 @@ export default (io) => {
       "Cookies: Third Party Cookies",
       ...config.cookieFlags.map((flag) => "Cookies: " + flag.label),
     ];
-    const prospectRows = list.map((item) => {
-      return [
-        item.account,
-        item.account,
-        item.firstName,
-        item.lastName,
-        item.title,
-        item.homePhone,
-        item.workPhone,
-        item.mobilePhone,
-        item.email,
-        item.linkedIn,
-        item.country,
-        item.city,
-        item.flags.join(" / "),
-        item.website,
-        item.industry,
-        item.accountLinkedIn,
-        item.ownerEmail,
-        item.checkedUrls,
-        ...prospectColumns
-          .slice(18)
-          .map((column) => (item.flags.includes(column) ? "X" : "")),
-      ];
-    });
+    const prospectRows = list
+      .map((item) => {
+        return [
+          item.account,
+          item.account,
+          item.firstName,
+          item.lastName,
+          item.title,
+          item.homePhone,
+          item.workPhone,
+          item.mobilePhone,
+          item.email,
+          item.linkedIn,
+          item.country,
+          item.city,
+          item.flags.join(" / "),
+          item.website,
+          item.industry,
+          item.accountLinkedIn,
+          item.ownerEmail,
+          item.checkedUrls,
+          ...prospectColumns
+            .slice(18)
+            .map((column) => (item.flags.includes(column) ? "X" : "")),
+        ];
+      })
+      .filter((item) => (item[2] || item[3] ? true : false));
     const accountWorkbook = service.createSheet(
       null,
       "Accounts",
       accountColumns,
       accountRows
     );
-    const prospectWorkbook = service.createSheet(
-      accountWorkbook,
-      "Prospects",
-      prospectColumns,
-      prospectRows
-    );
+    const prospectWorkbook =
+      prospectRows.length > 1
+        ? service.createSheet(
+            accountWorkbook,
+            "Prospects",
+            prospectColumns,
+            prospectRows
+          )
+        : accountWorkbook;
 
     // Send XLSX file name to client for download
     const fileName = service.yyyymmdd() + "-" + service.randomHash();
