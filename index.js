@@ -48,9 +48,7 @@ app.use((error, req, res, next) => {
 // Application initialization
 const start = () => {
   const server = app.listen(config.port, () => {
-    if (config.env === "development") {
-      console.log("Server running on http://localhost:" + config.port);
-    }
+    console.log("Server running on http://localhost:" + config.port);
   });
   startWebsocket(server, (io) => {
     websocket(io);

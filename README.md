@@ -1,37 +1,29 @@
 # Website Scanner
 
-## Setting up the scanner (Ubuntu 22.04)
+## Setting up the scanner on Windows
 
-Run the following commands in order
+Prerequsites: Install NodeJS from https://nodejs.org/en/download
 
-```
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash && sudo apt-get install -y nodejs
-```
+1. Download files
 
-```
-sudo apt update && sudo apt install -y gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 libgbm-dev ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils
-```
+2. Create folder "output"
+
+3. Create file ".env" and paste and adapt the code found below (all items prefixed with a "$" sign should be customized)
 
 ```
-echo "NODE_ENV=production" > .env
-echo "PORT=3000" >> .env
-echo "COOKIE_SECRET=$SECRET_KEY" >> .env
-echo "JWT_SECRET=$SECRET_KEY" >> .env
-echo "ADMIN_USERNAME=$LOGIN_USERNAME" >> .env
-echo "ADMIN_PASSWORD=$LOGIN_PASSWORD" >> .env
-echo "OUTREACH_DEFAULT_OWNER=$OUTREACH_DEFAULT_OWNER" >> .env
+NODE_ENV=production
+PORT=3000
+COOKIE_SECRET=$SECRET_KEY
+JWT_SECRET=$SECRET_KEY
+ADMIN_USERNAME=$LOGIN_USERNAME
+ADMIN_PASSWORD=$LOGIN_PASSWORD
+OUTREACH_DEFAULT_OWNER=$OUTREACH_DEFAULT_OWNER
 ```
 
-```
-mkdir output
-```
+4. Open the folder in the command line
 
-```
-npm i -g pm2
-```
+5. Run "npm install"
 
-```
-pm2 start index.js
-```
+6. Run "node index.js"
 
-## Deploying the scanner
+7. Open http://localhost:3000 in the browser

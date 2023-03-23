@@ -46,17 +46,31 @@ export default {
   cookieFlags: [
     {
       name: "_ga",
-      exactMatch: true,
+      exactMatch: false,
       expected: false,
       label: "Google Analytics",
-      fullLabel: 'Is the "_ga" Google Analytics cookie activated by default?',
+      fullLabel: 'Are Google Analytics cookies activated by default?',
     },
     {
-      name: "hubspotutk",
-      exactMatch: true,
+      name: "_hj",
+      exactMatch: false,
+      expected: false,
+      label: "Hotjar",
+      fullLabel: 'Are Hotjar cookies activated by default?',
+    },
+    {
+      name: "__hs",
+      exactMatch: false,
       expected: false,
       label: "HubSpot",
-      fullLabel: 'Is the "hubspotuk" HubSpot cookie activated by default?',
+      fullLabel: 'Are HubSpot cookies activated by default?',
+    },
+    {
+      name: "_pk",
+      exactMatch: false,
+      expected: false,
+      label: "Matomo",
+      fullLabel: 'Are Matomo cookies activated by default?',
     },
   ],
 };
