@@ -13,19 +13,13 @@ export default (io) => {
       io.emit("no-accounts");
       return;
     }
-    const accountNames = list.reduce((result, item) => {
-      if (!result.includes(item.account)) {
-        result.push(item.account);
-      }
-      return result;
-    }, []);
 
     // Launch browser
     const browser = await service.launchBrowser(true, true);
     const page = await browser.newPage();
 
     // Scan websites
-    for (let i = 0; i < accountNames.length; i++) {
+    for (let i = 0; i < list.length; i++) {
       const item = list[i];
       try {
         await page.goto(item.website);
@@ -110,6 +104,7 @@ export default (io) => {
               item.industry,
               item.employees,
               item.ownerEmail,
+              item.flags.includes("Website scan failed"),
               item.checkedUrls,
               ...accountColumns
                 .slice(8)
@@ -162,9 +157,10 @@ export default (io) => {
           item.industry,
           item.accountLinkedIn,
           item.ownerEmail,
+          item.flags.includes("Website scan failed"),
           item.checkedUrls,
           ...prospectColumns
-            .slice(18)
+            .slice(19)
             .map((column) => (item.flags.includes(column) ? "X" : "")),
         ];
       })
