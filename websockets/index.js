@@ -92,9 +92,8 @@ export default (io) => {
       "Cookies: Third Party Cookies",
       ...config.cookieFlags.map((flag) => "Cookies: " + flag.label),
     ];
-    const accountRows = accountNames
-      .map((accountName) => {
-        const item = list.find((item) => item.account === accountName);
+    const accountRows = list
+      .map((item) => {
         return item
           ? [
               item.account,
