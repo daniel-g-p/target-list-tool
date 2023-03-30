@@ -186,10 +186,7 @@ export default (io) => {
     const fileData = await service.bookToBuffer(prospectWorkbook);
     const fileWritten = await service
       .writeFile(filePath, fileData)
-      .then(() => {
-        console.log("File OK");
-        return true;
-      })
+      .then(() => true)
       .catch((error) => {
         console.log(error);
         return false;
