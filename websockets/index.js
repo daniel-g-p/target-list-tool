@@ -103,7 +103,7 @@ export default (io) => {
               item.industry,
               item.employees,
               item.ownerEmail,
-              item.flags.includes("Website scan failed"),
+              item.flags.includes("Website scan failed") ? "x" : "",
               item.checkedUrls,
               ...accountColumns
                 .slice(8)
@@ -156,7 +156,7 @@ export default (io) => {
           item.industry,
           item.accountLinkedIn,
           item.ownerEmail,
-          item.flags.includes("Website scan failed"),
+          item.flags.includes("Website scan failed") ? "x" : "",
           item.checkedUrls,
           ...prospectColumns
             .slice(19)
@@ -186,7 +186,10 @@ export default (io) => {
     const fileData = await service.bookToBuffer(prospectWorkbook);
     const fileWritten = await service
       .writeFile(filePath, fileData)
-      .then(() => true)
+      .then(() => {
+        console.log("File OK");
+        return true;
+      })
       .catch((error) => {
         console.log(error);
         return false;
